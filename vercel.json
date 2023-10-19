@@ -1,19 +1,15 @@
 {
-  "name": "your-app-name",
   "version": 2,
   "builds": [
     {
-      "src": "/",
-      "use": "@vercel/node"
+      "src": "index.js",
+      "use": "@now/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "./index.js"
+      "dest": "index.js"
     }
-  ],
-  "env": {
-    "YOUR_ENV_VAR_NAME": "your-env-var-value"
-  }
+  ]
 }
