@@ -2,16 +2,13 @@
   "name": "single-vendor",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \" npm run server \" \" npm run client \""
+    "start": "node index.js"
   },
   "homepage": "",
   "dependencies": {
