@@ -3,7 +3,7 @@
 
 // const storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
-//         cb(null, './uploads/') 
+//         cb(null, './tmp/') 
 //     },
 
 //     filename: function(req, file, cb) {
@@ -45,7 +45,7 @@ const uploadFile = async (req, res, next) => {
     const form = new formidable.IncomingForm();
 
     // Set the upload directory to the /tmp directory (writable in Vercel)
-    form.uploadDir = join(process.cwd(), '/uploads');
+    form.uploadDir = join(process.cwd(), '/tmp');
 
     form.parse(req, (err, fields, files) => {
         if (err) {
