@@ -7,7 +7,6 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const mongoose = require('mongoose');
 const stripe = require('stripe')(config.stripe_secret);
-const path = require('path');
 const morgan = require('morgan');
 const app = express();
 
@@ -29,14 +28,6 @@ mongoose.connect(config.mongoURI, {
     useUnifiedTopology: true
 }).then(() => console.log('MongoDb Connected')).catch(err => console.log(err));
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('./client/build'));
-
-    app.get('/*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-
-    });
-}
 
 app.get('/', async (req, res) => {
     res.send("Server is running...");
