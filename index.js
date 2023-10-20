@@ -8,11 +8,15 @@ const cartRoutes = require('./routes/cartRoutes');
 const mongoose = require('mongoose');
 const stripe = require('stripe')(config.stripe_secret);
 const morgan = require('morgan');
+const cors = require('cors');
 const app = express();
 
 /******************************************  MiddleWares  ********************************************/
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: ['http://localhost:3000', "https://derik-frontend-dpfk.vercel.app"]
+}));
 app.use(morgan('tiny'));
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/api/orders', orderRoutes);
