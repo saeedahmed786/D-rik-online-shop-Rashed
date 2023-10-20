@@ -80,11 +80,10 @@ exports.uploadProduct = async (req, res) => {
   console.log(req.body);
   try {
     if (req.file) {
-      console.log(req.file)
       const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
       const { path } = req.file;
-      const newPath = await uploader(req.file);
-      fs.unlinkSync(req.file);
+      const newPath = await uploader(path);
+      fs.unlinkSync(path);
 
       const product = new Product({
         title: req.body.title,
