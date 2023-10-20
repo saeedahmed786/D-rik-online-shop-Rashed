@@ -1,95 +1,107 @@
-// const multer = require('multer');
+// const cloudinary = require('cloudinary').v2;
+// const config = require('../config/keys');
+// const formidable = require('formidable');
 
+// cloudinary.config({
+//     cloud_name: config.cloudinary_cloud_name,
+//     api_key: config.cloudinary_api_key,
+//     api_secret: config.cloudinary_api_secret
+// });
 
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, './tmp/') 
-//     },
+// const uploadFile = async (req, res, next) => {
+//     try {
+//         const form = new formidable.IncomingForm();
+//         const nonFileParts = {};
+//         let pictureUploaded = "";
 
-//     filename: function(req, file, cb) {
-//         cb(null, Date.now() + '-' + file.originalname)
+//         form.onPart = function (part) {
+//             if (part.name === "file") {
+//                 pictureUploaded = "true";
+//                 // Handle file uploads
+//                 const uniqueFileName = Date.now() + '-' + part.originalFilename;
+//                 // Use the direct upload feature to upload the file to Cloudinary
+//                 const uploadStream = cloudinary.uploader.upload_stream(
+//                     { folder: 'Dêrik-online-shopRA/Product', public_id: uniqueFileName },
+//                     (error, result) => {
+//                         console.log(error, result)
+//                         if (error) {
+//                             console.error('Error uploading file to Cloudinary:', error);
+//                         }
+
+//                         req.body.productPicture = {
+//                             url: result.secure_url,
+//                             id: result.public_id,
+//                         };
+//                         pictureUploaded = "false";
+//                     }
+//                 );
+//                 part.pipe(uploadStream);
+
+//             } else {
+//                 if (pictureUploaded === "true") {
+
+//                 }
+
+//                 else if (pictureUploaded === "false") {
+//                     pictureUploaded = "done";
+//                     // Handle non-file parts
+//                     nonFileParts[part.name] = '';
+//                     part.on('data', function (data) {
+//                         nonFileParts[part.name] += data;
+//                     });
+//                 } else {
+//                     // Handle non-file parts
+//                     nonFileParts[part.name] = '';
+//                     part.on('data', function (data) {
+//                         nonFileParts[part.name] += data;
+//                     });
+//                 }
+//             }
+//         };
+
+//         console.log(pictureUploaded)
+
+//         form.on('end', function () {
+//             console.log(req.body);
+//             Object.assign(req.body, nonFileParts);
+//             // Set the non-file parts in req.body
+//             if (pictureUploaded === "false") {
+//                 pictureUploaded = ""
+//                 next();
+//             }
+
+//             if (pictureUploaded === "done") {
+//                 Object.assign(req.body, nonFileParts);
+//                 pictureUploaded = ""
+//                 next();
+//             }
+//         });
+//         form.parse(req);
+//     } catch (error) {
+//         console.log(error);
 //     }
-// });
+// };
 
-// const upload =  multer({
-//     storage : storage
-// });
-
-// module.exports = upload;
-
-// const multer = require('multer');
-// const { join } = require('path');
-
-// // Define the storage settings for multer
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         // Use the /tmp directory for temporary storage (writable in Vercel)
-//         cb(null, join(process.cwd(), '/mnt/data/'));
-//     },
-//     filename: function (req, file, cb) {
-//         // Define a custom filename for each uploaded file (e.g., with a timestamp)
-//         cb(null, Date.now() + '-' + file.originalname);
-//     }
-// });
-
-// // Create a multer instance with the defined storage settings
-// const upload = multer({
-//     storage: storage
-// });
-
-const formidable = require('formidable');
-const fs = require('fs');
-const { join } = require('path'); // Import extname for file extension
-
-const uploadFile = async (req, res, next) => {
-    const form = new formidable.IncomingForm();
-
-    // Set the upload directory to the /tmp directory (writable in Vercel)
-    form.uploadDir = join(process.cwd(), '/tmp');
-
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'File upload error.' });
-        }
-
-        const file = files.file; // Access the uploaded file
-        if (!file) {
-            return res.status(400).json({ error: 'No file provided.' });
-        }
-
-        // Generate a unique filename for the file (e.g., using a timestamp)
-        const fileExtension = file[0].originalFilename; // Get the file extension
-        const uniqueFileName = Date.now() + '-' + file.name;
-
-        console.log(file.path);
-
-        // Convert fields to single values
-        const fieldsSingleValues = {};
-        for (const key in fields) {
-            if (fields.hasOwnProperty(key)) {
-                fieldsSingleValues[key] = fields[key][0];
-            }
-        }
-
-        // Construct destination path using join
-        const destinationPath = join("/tmp", uniqueFileName + fileExtension);
-
-        // Move the file to the destination path
-        fs.rename(file[0].filepath, destinationPath, (renameErr) => {
-            if (renameErr) {
-                console.error('Error moving file:', renameErr);
-                return res.status(500).json({ error: 'File move error.' });
-            } else {
-                // Set the file path in the request object
-                req.file = destinationPath;
-                req.body = fieldsSingleValues;
-                next();
-            }
-        });
-    });
-};
-
-module.exports = uploadFile;
+// module.exports = uploadFile;
 
 
+
+
+const multer = require('multer');
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname)
+    }
+});
+
+const upload = multer({
+    storage: storage
+});
+
+module.exports = upload;

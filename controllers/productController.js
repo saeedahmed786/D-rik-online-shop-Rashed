@@ -82,7 +82,7 @@ exports.uploadProduct = async (req, res) => {
     if (req.file) {
       console.log(req.file)
       const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
-      // const { path } = req.file;
+      const { path } = req.file;
       const newPath = await uploader(req.file);
       fs.unlinkSync(req.file);
 
@@ -116,56 +116,100 @@ exports.uploadProduct = async (req, res) => {
 
 
 
-exports.updateProduct = async (req, res) => {
-  const findProduct = await Product.findById({ _id: req.params.id });
-  if (findProduct) {
-    if (req.file) {
-      const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Products');
-      const { path } = req.file;
-      const newPath = await uploader(path);
-      fs.unlinkSync(path);
+exports.updateProductController = async (req, res) => {
+  try {
+    const findProduct = await Product.findById({ _id: req.params.id });
+    if (findProduct) {
+      if (req.file) {
+        const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Products');
+        const { path } = req.file;
+        const newPath = await uploader(path);
+        fs.unlinkSync(path);
 
-      findProduct.title = req.body.title;
-      findProduct.description = req.body.description;
-      findProduct.price = req.body.price;
-      findProduct.seller = req.user._id;
-      findProduct.qty = req.body.qty;
-      findProduct.category = req.body.category;
-      findProduct.productPicture = newPath;
+        findProduct.title = req.body.title;
+        findProduct.description = req.body.description;
+        findProduct.price = req.body.price;
+        findProduct.seller = req.user._id;
+        findProduct.qty = req.body.qty;
+        findProduct.category = req.body.category;
+        findProduct.productPicture = newPath;
 
-      await findProduct.save(((error, result) => {
-        if (error) {
-          res.status(400).json({ errorMessage: 'Failed to update product. Please try again', error })
-        }
-        if (result) {
-          res.status(200).send({ successMessage: 'Product updated successfully', result });
-        }
+        await findProduct.save(((error, result) => {
+          if (error) {
+            res.status(400).json({ errorMessage: 'Failed to update product. Please try again', error })
+          }
+          if (result) {
+            res.status(200).send({ successMessage: 'Product updated successfully', result });
+          }
 
-      }))
-    } else {
-      findProduct.title = req.body.title;
-      findProduct.description = req.body.description;
-      findProduct.price = req.body.price;
-      findProduct.seller = req.user._id;
-      findProduct.qty = req.body.qty;
-      findProduct.category = req.body.category;
-      await findProduct.save(((error, result) => {
-        if (error) {
-          res.status(400).json({ errorMessage: 'Failed to update product. Please try again', error })
-        }
-        if (result) {
-          res.status(200).send({ successMessage: 'Product updated successfully', result });
-        }
+        }))
+      } else {
+        findProduct.title = req.body.title;
+        findProduct.description = req.body.description;
+        findProduct.price = req.body.price;
+        findProduct.seller = req.user._id;
+        findProduct.qty = req.body.qty;
+        findProduct.category = req.body.category;
+        await findProduct.save(((error, result) => {
+          if (error) {
+            res.status(400).json({ errorMessage: 'Failed to update product. Please try again', error })
+          }
+          else {
+            res.status(200).send({ successMessage: 'Product updated successfully', result });
+          }
+        }))
+      }
 
-      }))
+    }
+    else {
+      res.status(404).json({ errorMessage: 'Product not found' });
     }
 
-  }
-  else {
-    res.status(404).json({ errorMessage: 'Product not found' });
+  } catch (error) {
+    console.log(error);
   }
 
 }
+
+// exports.updateProductController = async (req, res) => {
+//   console.log(req.body);
+//   try {
+//     const findProduct = await Product.findById({ _id: req.params.id });
+//     console.log(req.body)
+//     if (findProduct) {
+//       if (req.file) {
+//         findProduct.title = req.body.title;
+//         findProduct.description = req.body.description;
+//         findProduct.price = req.body.price;
+//         findProduct.seller = req.user._id;
+//         findProduct.qty = req.body.qty;
+//         findProduct.category = req.body.category;
+//         findProduct.productPicture = req.body.productPicture;
+//       } else {
+//         findProduct.title = req.body.title;
+//         findProduct.description = req.body.description;
+//         findProduct.price = req.body.price;
+//         findProduct.seller = req.user._id;
+//         findProduct.qty = req.body.qty;
+//         findProduct.category = req.body.category;
+//       }
+
+//       const updatedProduct = await findProduct.save();
+
+//       if (updatedProduct) {
+//         res.json({ successMessage: 'Product updated successfully', result: updatedProduct });
+//       } else {
+//         res.status(400).json({ errorMessage: 'Failed to update product. Please try again' });
+//       }
+//     } else {
+//       res.status(404).json({ errorMessage: 'Product not found' });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.send({ errorMessage: 'Internal server error' });
+//   }
+// };
+
 
 
 exports.deleteProduct = async (req, res) => {

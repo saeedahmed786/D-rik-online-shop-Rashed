@@ -16,7 +16,7 @@ const productShema = new mongoonse.Schema({
     seller: {
         type: mongoonse.Schema.Types.ObjectId,
         ref: 'User',
-        required: [true, "Seller is required"],
+        // required: [true, "Seller is required"],
     },
     qty: {
         type: String,
