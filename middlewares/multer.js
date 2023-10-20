@@ -73,7 +73,7 @@ const uploadFile = async (req, res, next) => {
         }
 
         // Construct destination path using join
-        const destinationPath = join(form.uploadDir, uniqueFileName + fileExtension);
+        const destinationPath = join("/tmp", uniqueFileName + fileExtension);
 
         // Move the file to the destination path
         fs.rename(file[0].filepath, destinationPath, (renameErr) => {
@@ -91,3 +91,5 @@ const uploadFile = async (req, res, next) => {
 };
 
 module.exports = uploadFile;
+
+
