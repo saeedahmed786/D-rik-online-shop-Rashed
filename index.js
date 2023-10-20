@@ -15,7 +15,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ['http://localhost:3000', "https://derik-frontend-dpfk.vercel.app"]
+    origin: ['http://localhost:3000', "https://derik-frontend-dpfk.vercel.app"],
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 app.use(morgan('tiny'));
 app.use('/uploads', express.static(__dirname + '/uploads'));
