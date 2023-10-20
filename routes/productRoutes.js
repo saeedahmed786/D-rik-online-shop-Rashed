@@ -12,7 +12,7 @@ router.get('/get/:page', getLimitedProducts);
 router.get('/product/:id', getProductById);
 router.post('/cat/:id', getLimitedProductsByCat);
 router.post('/create', upload.single("file"), AuthenticatorJWT, isAdmin, uploadProduct);
-router.put('/update/:id', upload.single("file"), AuthenticatorJWT, updateProductController);
+router.post('/update/:id', upload.single("file"), AuthenticatorJWT, updateProductController);
 router.get('/get/related/:id', getRelatedProducts);
 router.delete('/delete/:id', AuthenticatorJWT, isAdmin, deleteProduct);
 
