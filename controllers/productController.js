@@ -80,10 +80,11 @@ exports.uploadProduct = async (req, res) => {
   console.log(req.body);
   try {
     if (req.file) {
+      console.log(req.file)
       const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
-      const { path } = req.file;
-      const newPath = await uploader(path);
-      fs.unlinkSync(path);
+      // const { path } = req.file;
+      const newPath = await uploader(req.file);
+      fs.unlinkSync(req.file);
 
       const product = new Product({
         title: req.body.title,
@@ -104,9 +105,12 @@ exports.uploadProduct = async (req, res) => {
         }
 
       }))
+    } else {
+      res.status(400).json({ errorMessage: 'Failed to upload file. Please try again' })
     }
   } catch (error) {
-    res.status(400).json({ errorMessage: 'Failed to create product. Please try again', error })
+    res.status(400).json({ errorMessage: 'Failed to create product. Please try again', error });
+    console.log(error);
   }
 }
 
