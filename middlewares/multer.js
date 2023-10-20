@@ -24,7 +24,7 @@ const { join } = require('path');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // Use the /tmp directory for temporary storage (writable in Vercel)
-        cb(null, join(process.cwd(), '/tmp/'));
+        cb(null, join(process.cwd(), '/mnt/data/'));
     },
     filename: function (req, file, cb) {
         // Define a custom filename for each uploaded file (e.g., with a timestamp)
