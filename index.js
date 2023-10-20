@@ -14,10 +14,7 @@ const app = express();
 /******************************************  MiddleWares  ********************************************/
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: ['http://localhost:3000', "https://derik-online-shop.vercel.app"],
-    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
-}));
+app.use(cors());
 app.use(morgan('tiny'));
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/api/orders', orderRoutes);
