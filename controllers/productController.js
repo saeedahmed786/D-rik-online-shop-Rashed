@@ -60,7 +60,7 @@ exports.getProductById = async (req, res) => {
   if (findProduct) {
     res.status(200).send(findProduct);
   } else {
-    res.send(200).json({}); 
+    res.send(200).json({});
   }
 }
 
@@ -79,11 +79,26 @@ exports.getProductByCategory = async (req, res) => {
 exports.uploadProduct = async (req, res) => {
   console.log(req.body);
   try {
-    if (req.file) {
+    if (req.files) {
+      let productPictures;
       const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
-      const { path } = req.file;
-      const newPath = await uploader(path);
-      fs.unlinkSync(path);
+      const urls = [];
+      const files = req.files;
+      for (const file of files) {
+        const { path } = file;
+        const newPath = await uploader(path)
+        urls.push(newPath);
+        fs.unlinkSync(path);
+      }
+
+      if (urls && urls.length > 0) {
+        productPictures = urls.map(pic => {
+          return {
+            url: pic.url,
+            cloudinary_id: pic.id
+          }
+        })
+      }
 
       const product = new Product({
         title: req.body.title,
@@ -92,7 +107,7 @@ exports.uploadProduct = async (req, res) => {
         price: req.body.price,
         qty: req.body.qty,
         category: req.body.category,
-        productPicture: newPath
+        productPicture: productPictures
       });
 
       await product.save(((error, result) => {
@@ -119,11 +134,26 @@ exports.updateProductController = async (req, res) => {
   try {
     const findProduct = await Product.findById({ _id: req.params.id });
     if (findProduct) {
-      if (req.file) {
-        const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Products');
-        const { path } = req.file;
-        const newPath = await uploader(path);
-        fs.unlinkSync(path);
+      if (req.files) {
+        let productPictures;
+        const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
+        const urls = [];
+        const files = req.files;
+        for (const file of files) {
+          const { path } = file;
+          const newPath = await uploader(path)
+          urls.push(newPath);
+          fs.unlinkSync(path);
+        }
+
+        if (urls && urls.length > 0) {
+          productPictures = urls.map(pic => {
+            return {
+              url: pic.url,
+              cloudinary_id: pic.id
+            }
+          })
+        }
 
         findProduct.title = req.body.title;
         findProduct.description = req.body.description;
@@ -131,7 +161,7 @@ exports.updateProductController = async (req, res) => {
         findProduct.seller = req.user._id;
         findProduct.qty = req.body.qty;
         findProduct.category = req.body.category;
-        findProduct.productPicture = newPath;
+        findProduct.productPicture = productPictures;
 
         await findProduct.save(((error, result) => {
           if (error) {
