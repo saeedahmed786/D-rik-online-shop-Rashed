@@ -134,7 +134,7 @@ exports.updateProductController = async (req, res) => {
   try {
     const findProduct = await Product.findById({ _id: req.params.id });
     if (findProduct) {
-      if (req.files) {
+      if (req.files) { 
         let productPictures;
         const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
         const urls = [];

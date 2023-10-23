@@ -7,5 +7,6 @@ module.exports = {
     cloudinary_api_secret: process.env.CLOUDINARY_SECRET_KEY,
     stripe_secret: process.env.STRIPE_SECRET_KEY,
     EMAIL: process.env.EMAIL,
-    PASSWORD: process.env.PASSWORD
+    PASSWORD: process.env.PASSWORD,
+    FRONTEND_LINK: process.env.FRONTEND_LINK
 }

@@ -3,6 +3,7 @@ const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const Template = require('../email-template');
 const sendEmail = require('../nodemailer');
+const config = require('../config/keys');
 
 exports.getAllOrders = async (req, res) => {
     const orders = await Order.find();
@@ -94,31 +95,6 @@ exports.placeOrderCOD = async (req, res) => {
     res.status(200).json({ successMessage: 'Successfully Purchased Items!' });
 }
 
-// exports.placeOrder = async (req, res) => {
-//     const order = new Order({
-//         userId: req.user._id,
-//         products: req.body.cartProducts,
-//         user: {
-//             name: req.body.name,
-//             email: req.body.email
-//         },
-//         data: req.body.paymentData,
-//         seller: req.body.seller,
-//         subTotal: req.body.subTotal,
-//         totalPrice: req.body.totalPrice,
-//         placed: req.body.placed,
-//     });
-//     await order.save(async (err, result) => {
-//         if (err) { console.log('Payment Failed', err) }
-//         if (result) {
-//             sendEmail(req.body.email, "Your order is placed!", Template({ orderId: result._id, name: req.body.name }));
-//             res.status(200).json({ successMessage: 'Successfully Purchased Items!' });
-//         } else {
-//             console.log('error');
-//         }
-//     })
-// }
-
 exports.placeOrder = async (req, res) => {
     // Group cart products by seller
     const productsBySeller = {};
@@ -152,8 +128,9 @@ exports.placeOrder = async (req, res) => {
             const result = await order.save();
             orders.push(result);
             const user = await User.findOne({ _id: seller });
-            sendEmail(user.email, "You have got an order", Template({ orderId: result._id, name: req.body.name }));
-            sendEmail(req.body.email, "Your order is placed!", Template({ orderId: result._id, name: req.body.name }));
+            let link = `${config.FRONTEND_LINK}/orders`
+            sendEmail(user.email, "You have got an order", Template({ orderId: result._id, name: req.body.name, link }));
+            sendEmail(req.body.email, "Your order is placed!", Template({ orderId: result._id, name: req.body.name, link }));
         } catch (err) {
             console.error('Error placing order:', err);
         }
