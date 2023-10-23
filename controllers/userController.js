@@ -145,6 +145,30 @@ exports.updateUser = async (req, res) => {
     }
 }
 
+exports.updateUserByAdmin = async (req, res) => {
+    const findUser = await User.findOne({ _id: req.params.id });
+    if (findUser) {
+        findUser.role = req.body.role;
+        findUser.firstName = req.body.firstName;
+        findUser.lastName = req.body.lastName;
+        findUser.email = req.body.email;
+        findUser.username = req.body.username;
+        findUser.phone = req.body.phone;
+        findUser.city = req.body.city;
+        findUser.country = req.body.country;
+        findUser.zipCode = req.body.zipCode;
+
+        const saveUser = await findUser.save();
+        if (saveUser) {
+            res.status(200).json({ successMessage: 'User Updated Successfully' })
+        } else (
+            res.status(400).json({ errorMessage: 'User could not be Updated.' })
+        )
+    } else {
+        res.status(404).json({ errorMessage: 'User not found.' })
+    }
+}
+
 
 exports.changePassword = async (req, res) => {
     if (req.body.newPassword !== req.body.confirmNewPassword) {
