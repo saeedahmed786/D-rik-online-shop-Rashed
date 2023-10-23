@@ -25,6 +25,7 @@ exports.getAllSellers = async (req, res) => {
 }
 
 exports.getUserById = async (req, res) => {
+    console.log(req.params)
     const findUser = await User.findOne({ _id: req.params.id });
     if (findUser) {
         res.status(200).json(findUser);

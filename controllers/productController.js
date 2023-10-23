@@ -60,7 +60,7 @@ exports.getProductById = async (req, res) => {
   if (findProduct) {
     res.status(200).send(findProduct);
   } else {
-    res.send(200).json({});
+    res.send(200).json({}); 
   }
 }
 
