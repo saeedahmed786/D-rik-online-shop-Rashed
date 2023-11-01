@@ -1,7 +1,6 @@
 const Product = require('../models/productModel');
 const cloudinary = require('../middlewares/cloudinary');
 const cloudinaryCon = require('../middlewares/cloudinary');
-const path = require("path");
 const fs = require("fs");
 
 exports.getAllProducts = async (req, res) => {
@@ -131,10 +130,12 @@ exports.uploadProduct = async (req, res) => {
 
 
 exports.updateProductController = async (req, res) => {
+  console.log("first")
   try {
     const findProduct = await Product.findById({ _id: req.params.id });
     if (findProduct) {
-      if (req.files) { 
+      if (req.files?.length > 0) {
+        console.log(req.files)
         let productPictures;
         const uploader = async (path) => await cloudinary.uploads(path, 'Dêrik-online-shopRA/Product')
         const urls = [];
@@ -173,12 +174,14 @@ exports.updateProductController = async (req, res) => {
 
         }))
       } else {
+        console.log(findProduct.productPicture)
         findProduct.title = req.body.title;
         findProduct.description = req.body.description;
         findProduct.price = req.body.price;
         findProduct.seller = req.user._id;
         findProduct.qty = req.body.qty;
         findProduct.category = req.body.category;
+        findProduct.productPicture = findProduct.productPicture;
         await findProduct.save(((error, result) => {
           if (error) {
             res.status(400).json({ errorMessage: 'Failed to update product. Please try again', error })
