@@ -25,7 +25,7 @@ const productShema = new mongoonse.Schema({
     },
     productPicture: {
         type: Array,
-        required: [true, "Product Picture is required"],
+        // required: [true, "Product Picture is required"],
     },
     category: {
         type: mongoonse.Schema.Types.ObjectId,

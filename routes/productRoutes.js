@@ -5,7 +5,7 @@ const { getProductById, deleteProduct, getRelatedProducts, uploadProduct, getLim
 
 const router = express.Router();
 
-
+ 
 router.get('/get', getAllProducts);
 router.get('/seller', AuthenticatorJWT, getAllSellerProducts);
 router.get('/get/:page', getLimitedProducts);
