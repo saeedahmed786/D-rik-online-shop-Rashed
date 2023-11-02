@@ -110,6 +110,7 @@ exports.placeOrder = async (req, res) => {
 
     // Create separate orders for each seller
     for (const seller in productsBySeller) {
+        const products = productsBySeller[seller];
         const order = new Order({
             userId: req.user._id,
             products: productsBySeller[seller],
@@ -122,9 +123,15 @@ exports.placeOrder = async (req, res) => {
             subTotal: req.body.subTotal, // Adjust subtotal calculation if needed
             totalPrice: req.body.totalPrice, // Adjust total price calculation if needed
             placed: req.body.placed,
-        });
-
-        try {
+        }); 
+        for (const product of products) {
+            const productData = await Product.findById(product.productId);
+            if (productData) {
+                productData.qty -= product.qty;
+                await productData.save();
+            }
+        } 
+        try {  
             const result = await order.save();
             orders.push(result);
             const user = await User.findOne({ _id: seller });
