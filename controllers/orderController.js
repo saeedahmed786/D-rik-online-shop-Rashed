@@ -6,7 +6,7 @@ const sendEmail = require('../nodemailer');
 const config = require('../config/keys');
 
 exports.getAllOrders = async (req, res) => {
-    const orders = await Order.find();
+    const orders = await Order.find().populate("seller");
     console.log("orders");
     if (orders) {
         res.status(200).json(orders);
@@ -123,15 +123,15 @@ exports.placeOrder = async (req, res) => {
             subTotal: req.body.subTotal, // Adjust subtotal calculation if needed
             totalPrice: req.body.totalPrice, // Adjust total price calculation if needed
             placed: req.body.placed,
-        }); 
+        });
         for (const product of products) {
             const productData = await Product.findById(product.productId);
             if (productData) {
                 productData.qty -= product.qty;
                 await productData.save();
             }
-        } 
-        try {  
+        }
+        try {
             const result = await order.save();
             orders.push(result);
             const user = await User.findOne({ _id: seller });
